@@ -1,0 +1,175 @@
+{% extends 'resort_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'resorts' %}">Resorts</a></li>
+            <li class="breadcrumb-item active">{{ resort.name }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row">
+        <div class="col-md-8">
+            {% if resort.image %}
+                <img src="{{ resort.image.url }}" class="img-fluid rounded shadow" alt="{{ resort.name }}">
+            {% else %}
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800" class="img-fluid rounded shadow" alt="{{ resort.name }}">
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title">{{ resort.name }}</h2>
+                    <p class="text-muted">
+                        <i class="fas fa-map-marker-alt"></i> {{ resort.location }}
+                    </p>
+                    
+                    <!-- 🔴 Room Availability Badge -->
+                    <div class="mb-3">
+                        {% if is_available %}
+                            <span class="badge bg-success py-2 px-3">
+                                <i class="fas fa-check-circle me-1"></i> 
+                                {{ available_rooms }} Room{{ available_rooms|pluralize }} Available
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger py-2 px-3">
+                                <i class="fas fa-times-circle me-1"></i> 
+                                No Rooms Available
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <span class="h3 text-primary">₹{{ resort.price_per_night }}</span>
+                        <span class="text-muted">per night</span>
+                    </div>
+                    
+                    <!-- 🔴 Room Info -->
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            <i class="fas fa-door-open me-1"></i> Total Rooms: {{ resort.total_rooms }}
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <span class="text-warning h4">★</span>
+                        <span class="h5">{{ resort.rating }}/5.0</span>
+                    </div>
+                    
+                    <!-- 🔴 Book Now Button - Disabled if no rooms available -->
+                    {% if is_available %}
+                        <a href="{% url 'booking' %}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-calendar-check me-2"></i>Book Now
+                        </a>
+                    {% else %}
+                        <button class="btn btn-secondary btn-lg w-100" disabled>
+                            <i class="fas fa-ban me-2"></i>Fully Booked
+                        </button>
+                        <small class="text-muted d-block text-center mt-2">Check back later for availability</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h3>About this resort</h3>
+                    <p>{{ resort.description }}</p>
+                    
+                    <h4 class="mt-4">Amenities</h4>
+                    <div class="row">
+                        {% for amenity in resort.amenities.split %}
+                            <div class="col-md-6">
+                                <i class="fas fa-check text-success"></i> {{ amenity }}
+                            </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <p class="text-muted">No amenities listed.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 🔴 Sidebar with Quick Info -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header" style="background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); color: #1A1A18;">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Quick Info</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-3">
+                            <i class="fas fa-bed me-2" style="color: #C9A84C;"></i>
+                            <strong>Total Rooms:</strong> {{ resort.total_rooms }}
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-check-circle me-2" style="color: #2D6A4F;"></i>
+                            <strong>Available:</strong> 
+                            <span class="{% if is_available %}text-success{% else %}text-danger{% endif %}">
+                                {{ available_rooms }} room{{ available_rooms|pluralize }}
+                            </span>
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-star me-2" style="color: #C9A84C;"></i>
+                            <strong>Rating:</strong> {{ resort.rating }}/5.0
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-map-marker-alt me-2" style="color: #C0392B;"></i>
+                            <strong>Location:</strong> {{ resort.location }}
+                        </li>
+                        <li>
+                            <i class="fas fa-tag me-2" style="color: #C9A84C;"></i>
+                            <strong>Price:</strong> ₹{{ resort.price_per_night }}/night
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 🔴 Similar Resorts Section -->
+            {% if similar_resorts %}
+            <div class="card shadow mt-4">
+                <div class="card-header" style="background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); color: #1A1A18;">
+                    <h5 class="mb-0"><i class="fas fa-hotel me-2"></i>Similar Resorts</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for similar in similar_resorts %}
+                        <a href="{% url 'resort_detail' similar.pk %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ similar.name }}</strong><br>
+                                    <small class="text-muted">{{ similar.location }}</small>
+                                </div>
+                                <span class="badge bg-primary">₹{{ similar.price_per_night }}</span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.badge {
+    font-size: 0.9rem;
+}
+.btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.list-group-item:hover {
+    background-color: #FAF8F3;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,299 @@
+{% extends 'resort_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Book Your Stay</h1>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="resort" class="form-label">Select Resort</label>
+                                <select class="form-select" id="resort" name="resort" required>
+                                    <option value="">Choose a resort...</option>
+                                    {% for resort in resorts %}
+                                        <option value="{{ resort.id }}" 
+                                                data-price="{{ resort.price_per_night }}"
+                                                data-total-rooms="{{ resort.total_rooms }}">
+                                            {{ resort.name }} - ₹{{ resort.price_per_night }}/night 
+                                            ({{ resort.available_rooms }} rooms available)
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="check_in" class="form-label">Check-in Date</label>
+                                <input type="date" class="form-control" id="check_in" name="check_in" min="{{ today }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="check_out" class="form-label">Check-out Date</label>
+                                <input type="date" class="form-control" id="check_out" name="check_out" min="{{ today }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="guests" class="form-label">Number of Guests</label>
+                                <input type="number" class="form-control" id="guests" name="guests" min="1" max="20" value="2" required>
+                            </div>
+                            <!-- 🔴 NEW: Room Selection -->
+                            <div class="col-md-4 mb-3">
+                                <label for="rooms" class="form-label">Number of Rooms</label>
+                                <input type="number" class="form-control" id="rooms" name="rooms" min="1" max="5" value="1" required>
+                                <small class="text-muted" id="availabilityMessage"></small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Room Type</label>
+                                <select class="form-select" name="room_type">
+                                    <option value="standard">Standard Room</option>
+                                    <option value="deluxe">Deluxe Room</option>
+                                    <option value="suite">Suite</option>
+                                    <option value="presidential">Presidential Suite</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="special_requests" class="form-label">Special Requests (Optional)</label>
+                            <textarea class="form-control" id="special_requests" name="special_requests" rows="3" placeholder="Any dietary requirements, late check-in, etc."></textarea>
+                        </div>
+                        
+                        <!-- 🔴 Price Preview Section -->
+                        <div class="alert alert-info">
+                            <h5><i class="fas fa-calculator me-2"></i>Booking Summary</h5>
+                            <p class="mb-0" id="pricePreview">Select a resort and dates to see price</p>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 btn-lg" id="submitBtn">
+                            <i class="fas fa-check-circle me-2"></i>Confirm Booking
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 🔴 Recent Bookings Section -->
+    {% if user_bookings %}
+    <div class="row mt-5">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header" style="background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); color: #1A1A18;">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Your Recent Bookings</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Resort</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Guests</th>
+                                    <th>Rooms</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in user_bookings %}
+                                <tr>
+                                    <td>{{ booking.resort.name }}</td>
+                                    <td>{{ booking.check_in|date:"M d, Y" }}</td>
+                                    <td>{{ booking.check_out|date:"M d, Y" }}</td>
+                                    <td>{{ booking.guests }}</td>
+                                    <td>{{ booking.rooms_booked }}</td>
+                                    <td><strong>₹{{ booking.total_price }}</strong></td>
+                                    <td>
+                                        {% if booking.status == 'pending' %}
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        {% elif booking.status == 'confirmed' %}
+                                            <span class="badge bg-success">Confirmed</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Cancelled</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{% url 'my_bookings' %}" class="btn btn-outline-primary btn-sm">
+                        View All Bookings <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkIn = document.getElementById('check_in');
+    const checkOut = document.getElementById('check_out');
+    const resortSelect = document.getElementById('resort');
+    const guestsInput = document.getElementById('guests');
+    const roomsInput = document.getElementById('rooms');
+    const pricePreview = document.getElementById('pricePreview');
+    const availabilityMessage = document.getElementById('availabilityMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    checkIn.min = today;
+    checkOut.min = today;
+    
+    // Ensure check-out is after check-in
+    checkIn.addEventListener('change', function() {
+        checkOut.min = this.value;
+        if (checkOut.value < this.value) {
+            checkOut.value = this.value;
+        }
+        calculatePrice();
+        checkAvailability();
+    });
+    
+    // Calculate price and check availability when inputs change
+    checkOut.addEventListener('change', function() {
+        calculatePrice();
+        checkAvailability();
+    });
+    resortSelect.addEventListener('change', function() {
+        calculatePrice();
+        checkAvailability();
+        updateRoomLimit();
+    });
+    guestsInput.addEventListener('change', calculatePrice);
+    roomsInput.addEventListener('change', function() {
+        calculatePrice();
+        checkAvailability();
+    });
+    
+    // 🔴 Update room max based on resort selection
+    function updateRoomLimit() {
+        const resortOption = resortSelect.options[resortSelect.selectedIndex];
+        if (resortSelect.value) {
+            const totalRooms = parseInt(resortOption.dataset.totalRooms) || 10;
+            roomsInput.max = totalRooms;
+        }
+    }
+    
+    // 🔴 Check real-time availability via API
+    async function checkAvailability() {
+        const resortId = resortSelect.value;
+        const checkInDate = checkIn.value;
+        const checkOutDate = checkOut.value;
+        const roomsRequested = parseInt(roomsInput.value) || 1;
+        
+        if (!resortId || !checkInDate || !checkOutDate) {
+            availabilityMessage.innerHTML = '';
+            return;
+        }
+        
+        if (checkOutDate <= checkInDate) {
+            availabilityMessage.innerHTML = '<span class="text-danger">Invalid dates</span>';
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/resorts/api/check-availability/${resortId}/?check_in=${checkInDate}&check_out=${checkOutDate}&rooms=${roomsRequested}`);
+            const data = await response.json();
+            
+            if (data.available) {
+                availabilityMessage.innerHTML = `<span class="text-success"><i class="fas fa-check-circle"></i> ${data.available_rooms} room(s) available</span>`;
+                submitBtn.disabled = false;
+            } else {
+                availabilityMessage.innerHTML = `<span class="text-danger"><i class="fas fa-times-circle"></i> Only ${data.available_rooms} room(s) available</span>`;
+                submitBtn.disabled = true;
+            }
+        } catch (error) {
+            console.error('Error checking availability:', error);
+        }
+    }
+    
+    function calculatePrice() {
+        const resortOption = resortSelect.options[resortSelect.selectedIndex];
+        const checkInDate = new Date(checkIn.value);
+        const checkOutDate = new Date(checkOut.value);
+        const guests = parseInt(guestsInput.value) || 1;
+        const rooms = parseInt(roomsInput.value) || 1;
+        
+        if (resortSelect.value && checkIn.value && checkOut.value) {
+            let pricePerNight = resortOption.dataset.price;
+            if (!pricePerNight) {
+                const priceText = resortOption.text;
+                const priceMatch = priceText.match(/₹(\d+\.?\d*)/);
+                pricePerNight = priceMatch ? parseFloat(priceMatch[1]) : 0;
+            } else {
+                pricePerNight = parseFloat(pricePerNight);
+            }
+            
+            const days = (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+            
+            if (days > 0 && pricePerNight > 0) {
+                const total = days * pricePerNight * rooms;
+                pricePreview.innerHTML = `
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>${days} night${days > 1 ? 's' : ''}</strong><br>
+                            <small class="text-muted">₹${pricePerNight} × ${rooms} room${rooms > 1 ? 's' : ''}</small>
+                        </div>
+                        <div class="col-6 text-end">
+                            <strong style="font-size: 1.3rem;">₹${total}</strong><br>
+                            <small class="text-muted">For ${guests} guest${guests > 1 ? 's' : ''}</small>
+                        </div>
+                    </div>
+                `;
+            } else if (days <= 0) {
+                pricePreview.innerHTML = '<span class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>Check-out date must be after check-in date</span>';
+            }
+        } else {
+            pricePreview.textContent = 'Select a resort and dates to see price';
+        }
+    }
+    
+    // Calculate price on page load if values are pre-filled
+    if (resortSelect.value || checkIn.value || checkOut.value) {
+        calculatePrice();
+        checkAvailability();
+    }
+    
+    // Initialize room limit
+    updateRoomLimit();
+});
+</script>
+
+<style>
+.table td, .table th {
+    vertical-align: middle;
+}
+.badge {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+}
+#submitBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,759 @@
+{% extends 'resort_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section with Search -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h1 class="hero-title animate__animated animate__fadeInDown">
+                    Discover Your Perfect <span class="text-gradient">Getaway</span>
+                </h1>
+                <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-1s">
+                    Find and book luxury resorts at unbeatable prices
+                </p>
+                
+                <!-- Search Form -->
+                <div class="search-box animate__animated animate__fadeInUp animate__delay-2s">
+                    <form action="{% url 'resorts' %}" method="GET" class="search-form">
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    <input type="text" class="form-control" name="location" placeholder="Where to?">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                    <input type="date" class="form-control" name="check_in" placeholder="Check-in">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                    <input type="date" class="form-control" name="check_out" placeholder="Check-out">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Wave SVG -->
+    <div class="wave-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path fill="#FAF8F3" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+    </div>
+</section>
+
+<!-- Stats Counter Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-hotel"></i>
+                    </div>
+                    <h3 class="stat-number" data-target="{{ stats.resorts_count }}">0</h3>
+                    <p>Luxury Resorts</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-pin"></i>
+                    </div>
+                    <h3 class="stat-number" data-target="{{ stats.locations_count }}">0</h3>
+                    <p>Destinations</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <h3 class="stat-number" data-target="{{ stats.happy_customers }}">0</h3>
+                    <p>Happy Customers</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 class="stat-number" data-target="{{ stats.awards }}">0</h3>
+                    <p>Awards Won</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Resorts Section -->
+<section class="featured-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2 class="section-title">Featured Resorts</h2>
+            <p class="section-subtitle">Handpicked luxury stays for you</p>
+        </div>
+        
+        <div class="row">
+            {% for resort in featured_resorts %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="resort-card">
+                        <div class="resort-image">
+                            {% if resort.image %}
+                                <img src="{{ resort.image.url }}" alt="{{ resort.name }}">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600" alt="{{ resort.name }}">
+                            {% endif %}
+                            <div class="resort-badge">Featured</div>
+                            <div class="resort-price">₹{{ resort.price_per_night }}<span>/night</span></div>
+                        </div>
+                        <div class="resort-content">
+                            <div class="resort-location">
+                                <i class="fas fa-map-marker-alt"></i> {{ resort.location }}
+                            </div>
+                            <h3 class="resort-title">{{ resort.name }}</h3>
+                            <p class="resort-description">{{ resort.description|default:"Experience luxury and comfort"|truncatewords:12 }}</p>
+                            <div class="resort-footer">
+                                <div class="resort-rating">
+                                    <div class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <span>4.8 (120 reviews)</span>
+                                </div>
+                                <a href="{% url 'resort_detail' resort.pk %}" class="btn btn-outline-primary btn-sm">
+                                    View Details <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <p class="text-muted">No featured resorts available at the moment.</p>
+                    <a href="{% url 'resorts' %}" class="btn btn-outline-primary mt-3">Browse All Resorts</a>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'resorts' %}" class="btn btn-primary btn-lg">
+                View All Resorts <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2 class="section-title">Why Choose StayEase</h2>
+            <p class="section-subtitle">We make your vacation planning effortless</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Best Price Guarantee</h4>
+                    <p>We match any competitor's price for the same resort</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h4>24/7 Support</h4>
+                    <p>Our customer service team is always here to help</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h4>Easy Booking</h4>
+                    <p>Book your stay in just a few clicks</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-undo-alt"></i>
+                    </div>
+                    <h4>Free Cancellation</h4>
+                    <p>Cancel up to 24 hours before check-in for free</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="newsletter-wrapper">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h3>Subscribe to Our Newsletter</h3>
+                    <p>Get exclusive deals and updates straight to your inbox</p>
+                </div>
+                <div class="col-md-6">
+                    <form class="newsletter-form" method="POST" action="{% url 'contact' %}">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+                            <button class="btn btn-primary" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Auth Popup Modal -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); color: #1A1A18;">
+                <h5 class="modal-title" id="authModalLabel">🎉 Welcome to StayEase!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-gift fa-4x mb-3" style="color: #C9A84C;"></i>
+                <h4 style="color: #8B6914;">Get 20% Off Your First Booking!</h4>
+                <p class="text-muted">Sign up now and unlock exclusive member deals</p>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'signup' %}" class="btn btn-primary btn-lg">Sign Up Now</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ============================================
+   STAYEASE COLOR SYSTEM - ZERO PURPLE!
+   Background: #FAF8F3 (Cream)
+   Navbar: #1A1A18 (Black)
+   Accent: #C9A84C (Gold)
+   ============================================ */
+
+/* Hero Section - Fixed for Navbar */
+.hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    overflow: hidden;
+    padding-top: 90px;
+    margin-top: 0;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920') center/cover;
+    opacity: 1;
+    animation: zoomInOut 20s infinite alternate;
+    z-index: 1;
+}
+
+@keyframes zoomInOut {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 2;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 3;
+    color: #FFFFFF;
+    padding: 0 0 60px;
+    margin-top: 0;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    line-height: 1.2;
+    color: #FFFFFF;
+    text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #FFFFFF 0%, #E8D5A3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+    color: #FFFFFF;
+    text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Search Box - MOVED UP */
+.search-box {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid #E8D5A3;
+    position: relative;
+    z-index: 10;
+    margin-top: 5px;
+}
+
+.search-form .input-group-text {
+    background: #FAF8F3;
+    border-right: none;
+    color: #C9A84C;
+    border: 1px solid #E8E4D8;
+}
+
+.search-form .form-control {
+    border-left: none;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #E8E4D8;
+    border-left: none;
+}
+
+.search-form .form-control:focus {
+    box-shadow: none;
+    border-color: #C9A84C;
+}
+
+.search-form .btn-primary {
+    padding: 12px 20px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);
+    color: #1A1A18;
+    border: none;
+}
+
+.search-form .btn-primary:hover {
+    background: linear-gradient(135deg, #E8D5A3 0%, #C9A84C 100%);
+}
+
+/* Wave Container */
+.wave-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+}
+
+/* Stats Section - Cream Background */
+.stats-section {
+    padding: 80px 0;
+    background: #FAF8F3;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 30px;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-10px);
+}
+
+.stat-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon i {
+    font-size: 2rem;
+    color: #1A1A18;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #8B6914;
+    margin-bottom: 10px;
+}
+
+.stat-item p {
+    color: #6B6B5F;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Section Headers */
+.section-header {
+    margin-bottom: 50px;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #8B6914;
+    margin-bottom: 15px;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #6B6B5F;
+}
+
+/* Featured Section - Cream Background */
+.featured-section {
+    padding: 80px 0;
+    background: #FAF8F3;
+}
+
+/* Resort Cards */
+.resort-card {
+    background: #FFFFFF;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid #E8E4D8;
+}
+
+.resort-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(201, 168, 76, 0.15);
+    border-color: #C9A84C;
+}
+
+.resort-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.resort-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.resort-card:hover .resort-image img {
+    transform: scale(1.1);
+}
+
+.resort-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);
+    color: #1A1A18;
+    padding: 5px 15px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.resort-price {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: #FFFFFF;
+    color: #8B6914;
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.resort-price span {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #6B6B5F;
+}
+
+.resort-content {
+    padding: 25px;
+}
+
+.resort-location {
+    color: #C9A84C;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.resort-location i {
+    margin-right: 5px;
+}
+
+.resort-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #8B6914;
+}
+
+.resort-description {
+    color: #6B6B5F;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.resort-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid #E8E4D8;
+}
+
+.resort-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stars {
+    color: #C9A84C;
+}
+
+.resort-rating span {
+    color: #6B6B5F;
+    font-size: 0.9rem;
+}
+
+/* Features Section - Cream Background */
+.features-section {
+    padding: 80px 0;
+    background: #FAF8F3;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 40px 30px;
+    background: #FFFFFF;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 1px solid #E8E4D8;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(201, 168, 76, 0.15);
+    border-color: #C9A84C;
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 25px;
+    background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-icon i {
+    font-size: 2rem;
+    color: #1A1A18;
+}
+
+.feature-card h4 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #8B6914;
+}
+
+.feature-card p {
+    color: #6B6B5F;
+    line-height: 1.6;
+}
+
+/* Newsletter Section */
+.newsletter-section {
+    padding: 60px 0;
+    background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);
+}
+
+.newsletter-wrapper {
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    color: #1A1A18;
+}
+
+.newsletter-wrapper h3 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #1A1A18;
+}
+
+.newsletter-wrapper p {
+    color: #1A1A18;
+    opacity: 0.9;
+}
+
+.newsletter-form .form-control {
+    padding: 15px 20px;
+    border: none;
+    border-radius: 50px 0 0 50px;
+    background: #FFFFFF;
+}
+
+.newsletter-form .btn {
+    padding: 15px 30px;
+    border-radius: 0 50px 50px 0;
+    background: #1A1A18;
+    color: #C9A84C;
+    font-weight: 600;
+    border: none;
+}
+
+.newsletter-form .btn:hover {
+    background: #FFFFFF;
+    color: #8B6914;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        padding-top: 75px;
+        min-height: auto;
+        padding-bottom: 60px;
+        align-items: flex-start;
+    }
+    
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+    
+    .hero-content {
+        padding: 0 0 40px;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .search-box {
+        padding: 20px;
+        margin-top: 5px;
+    }
+}
+</style>
+
+<!-- Counter Animation Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Counter animation
+    const counters = document.querySelectorAll('.stat-number');
+    const speed = 200;
+    
+    counters.forEach(counter => {
+        const animate = () => {
+            const value = +counter.getAttribute('data-target');
+            const data = +counter.innerText;
+            const time = value / speed;
+            
+            if (data < value) {
+                counter.innerText = Math.ceil(data + time);
+                setTimeout(animate, 1);
+            } else {
+                counter.innerText = value;
+            }
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animate();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        
+        observer.observe(counter);
+    });
+    
+    // Set minimum date for date inputs
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelectorAll('input[type="date"]').forEach(input => {
+        input.min = today;
+    });
+    
+    // Show welcome modal for new visitors
+    if (!localStorage.getItem('welcomeModalShown')) {
+        setTimeout(function() {
+            var authModal = new bootstrap.Modal(document.getElementById('authModal'));
+            authModal.show();
+            localStorage.setItem('welcomeModalShown', 'true');
+        }, 3000);
+    }
+});
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+{% endblock %}

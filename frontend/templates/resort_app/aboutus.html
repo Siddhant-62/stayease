@@ -1,0 +1,237 @@
+{% extends 'resort_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero" style="background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); padding: 60px 0; margin-top: -20px;">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold" style="color: #1A1A18;">About StayEase</h1>
+        <p class="lead" style="color: #1A1A18; opacity: 0.9;">Your Trusted Partner in Luxury Resort Bookings</p>
+    </div>
+</section>
+
+<!-- Our Story Section -->
+<section class="py-5" style="background: #FAF8F3;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="mb-4" style="color: #8B6914;">Our Story</h2>
+                <p class="lead" style="color: #6B6B5F;">Founded in 2024, StayEase was born from a simple idea: finding the perfect resort should be easy, enjoyable, and stress-free.</p>
+                <p style="color: #6B6B5F; line-height: 1.8;">What started as a small passion project has grown into a trusted platform connecting thousands of travelers with their dream destinations. We believe that every vacation should be memorable, and it all starts with the perfect place to stay.</p>
+                <p style="color: #6B6B5F; line-height: 1.8;">Today, StayEase partners with hundreds of luxury resorts worldwide, offering exclusive deals and personalized service that makes us stand out from the crowd.</p>
+            </div>
+            <div class="col-md-6">
+                <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600" 
+                     alt="Luxury Resort" 
+                     class="img-fluid rounded shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Mission & Values -->
+<section class="py-5" style="background: #FFFFFF;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="color: #8B6914;">Our Mission & Values</h2>
+            <p class="text-muted">What drives us every single day</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3" style="width: 70px; height: 70px; background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                            <i class="fas fa-star fa-2x" style="color: #1A1A18;"></i>
+                        </div>
+                        <h5 style="color: #8B6914;">Excellence</h5>
+                        <p style="color: #6B6B5F;">We curate only the finest resorts that meet our rigorous quality standards.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3" style="width: 70px; height: 70px; background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                            <i class="fas fa-hand-holding-heart fa-2x" style="color: #1A1A18;"></i>
+                        </div>
+                        <h5 style="color: #8B6914;">Customer First</h5>
+                        <p style="color: #6B6B5F;">Your satisfaction is our priority. We're here 24/7 to ensure your stay is perfect.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3" style="width: 70px; height: 70px; background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                            <i class="fas fa-shield-alt fa-2x" style="color: #1A1A18;"></i>
+                        </div>
+                        <h5 style="color: #8B6914;">Trust & Transparency</h5>
+                        <p style="color: #6B6B5F;">No hidden fees, no surprises. What you see is exactly what you get.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="py-5" style="background: #FAF8F3;">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stat-box">
+                    <h2 class="fw-bold" style="color: #8B6914;">{{ stats.resorts_count|default:50 }}+</h2>
+                    <p style="color: #6B6B5F;">Luxury Resorts</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stat-box">
+                    <h2 class="fw-bold" style="color: #8B6914;">{{ stats.locations_count|default:25 }}+</h2>
+                    <p style="color: #6B6B5F;">Destinations</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stat-box">
+                    <h2 class="fw-bold" style="color: #8B6914;">{{ stats.bookings_count|default:5000 }}+</h2>
+                    <p style="color: #6B6B5F;">Happy Travelers</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-3">
+                <div class="stat-box">
+                    <h2 class="fw-bold" style="color: #8B6914;">24/7</h2>
+                    <p style="color: #6B6B5F;">Customer Support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-5" style="background: #FFFFFF;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="color: #8B6914;">Why Choose StayEase?</h2>
+            <p class="text-muted">We make your vacation planning effortless and enjoyable</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-check-circle fa-2x" style="color: #2D6A4F;"></i>
+                    </div>
+                    <div>
+                        <h5 style="color: #8B6914;">Best Price Guarantee</h5>
+                        <p style="color: #6B6B5F;">Found a lower price? We'll match it and give you an extra 10% off.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-check-circle fa-2x" style="color: #2D6A4F;"></i>
+                    </div>
+                    <div>
+                        <h5 style="color: #8B6914;">Free Cancellation</h5>
+                        <p style="color: #6B6B5F;">Cancel up to 24 hours before check-in with zero fees.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-check-circle fa-2x" style="color: #2D6A4F;"></i>
+                    </div>
+                    <div>
+                        <h5 style="color: #8B6914;">Verified Reviews</h5>
+                        <p style="color: #6B6B5F;">All reviews come from real guests who have actually stayed.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="d-flex">
+                    <div class="me-3">
+                        <i class="fas fa-check-circle fa-2x" style="color: #2D6A4F;"></i>
+                    </div>
+                    <div>
+                        <h5 style="color: #8B6914;">Secure Payments</h5>
+                        <p style="color: #6B6B5F;">Your payment information is always safe and encrypted.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5" style="background: #FAF8F3;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="color: #8B6914;">Meet Our Team</h2>
+            <p class="text-muted">The passionate people behind StayEase</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-4">
+                        <img src="#" alt="Team Member" class="rounded-circle mb-3" width="120" height="120">
+                        <h5 style="color: #8B6914;">Siddhant Kumar</h5>
+                        <p class="text-muted">Founder & CEO</p>
+                        <p style="color: #6B6B5F;">Former hotelier with 15+ years of experience in luxury hospitality.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-4">
+                        <img src="#" alt="Team Member" class="rounded-circle mb-3" width="120" height="120">
+                        <h5 style="color: #8B6914;">kumar Saurabh</h5>
+                        <p class="text-muted">Head of Operations</p>
+                        <p style="color: #6B6B5F;">Ensures every booking is handled with precision and care.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-4">
+                        <img src="#" alt="Team Member" class="rounded-circle mb-3" width="120" height="120">
+                        <h5 style="color: #8B6914;"> Rishi </h5>
+                        <p class="text-muted">Customer Experience Lead</p>
+                        <p style="color: #6B6B5F;">Dedicated to making every guest feel special and valued.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #C9A84C 0%, #8B6914 100%);">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-3" style="color: #1A1A18;">Ready to Find Your Perfect Getaway?</h2>
+        <p class="lead mb-4" style="color: #1A1A18; opacity: 0.9;">Join thousands of happy travelers who found their dream vacation with StayEase.</p>
+        <a href="{% url 'resorts' %}" class="btn btn-lg px-5" style="background: #1A1A18; color: #C9A84C; font-weight: 600; border-radius: 30px;">
+            Explore Resorts <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+</section>
+
+<style>
+.about-hero {
+    border-radius: 0 0 50px 50px;
+}
+.stat-box {
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+.stat-box:hover {
+    transform: translateY(-5px);
+}
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+</style>
+{% endblock %}
